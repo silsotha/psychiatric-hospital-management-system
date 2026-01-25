@@ -1,0 +1,289 @@
+﻿<Window x:Class="PsychiatricHospitalWPF.Views.MedicalRecords.MedicalCardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Title="Медицинская карта" 
+        Height="750" Width="1100"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Шапка -->
+        <Border Grid.Row="0" Background="#673AB7" Padding="15">
+            <StackPanel>
+                <TextBlock x:Name="txtPatientName" 
+                          Text="Медицинская карта пациента" 
+                          FontSize="18" 
+                          FontWeight="Bold" 
+                          Foreground="White"/>
+                <TextBlock x:Name="txtPatientInfo" 
+                          Text="" 
+                          FontSize="12" 
+                          Foreground="White"
+                          Opacity="0.9"
+                          Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Панель кнопок -->
+        <Border Grid.Row="1" Background="#f5f5f5" Padding="10" BorderBrush="#ddd" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="btnAddRecord" 
+                           Content="➕ Добавить запись" 
+                           Click="BtnAddRecord_Click"
+                           Background="#4CAF50"
+                           Foreground="White"
+                           Padding="12,6"
+                           Margin="0,0,5,0"/>
+
+                    <Button x:Name="btnRefresh" 
+                           Content="🔄 Обновить" 
+                           Click="BtnRefresh_Click"
+                           Background="#FF9800"
+                           Foreground="White"
+                           Padding="12,6"
+                           Margin="0,0,5,0"/>
+
+                    <Button x:Name="btnExportPDF" 
+                           Content="📄 Экспорт в PDF" 
+                           Click="BtnExportPDF_Click"
+                           Background="#2196F3"
+                           Foreground="White"
+                           Padding="12,6"
+                           Margin="0,0,5,0"/>
+                </StackPanel>
+
+                <!-- Переключатель режимов отображения -->
+                <StackPanel Orientation="Horizontal" Grid.Column="1">
+                    <Label Content="Режим:" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="cmbViewMode" 
+                             Width="180"
+                             VerticalAlignment="Center"
+                             SelectionChanged="CmbViewMode_SelectionChanged">
+                        <ComboBoxItem Content="📋 Список" IsSelected="True"/>
+                        <ComboBoxItem Content="📅 Временная шкала"/>
+                        <ComboBoxItem Content="📊 Группировка по датам"/>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Панель фильтров -->
+        <Border Grid.Row="2" Background="#f9f9f9" Padding="10" BorderBrush="#ddd" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Фильтры:" Grid.Column="0" VerticalAlignment="Center" FontWeight="SemiBold"/>
+
+                <StackPanel Grid.Column="1" Margin="5,0">
+                    <Label Content="С даты:" FontSize="10"/>
+                    <DatePicker x:Name="dpFilterFrom" Height="25"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Margin="5,0">
+                    <Label Content="По дату:" FontSize="10"/>
+                    <DatePicker x:Name="dpFilterTo" Height="25"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="3" Margin="5,0">
+                    <Label Content="Тип записи:" FontSize="10"/>
+                    <ComboBox x:Name="cmbFilterType" Height="25">
+                        <ComboBoxItem Content="Все типы" IsSelected="True"/>
+                        <ComboBoxItem Content="👨‍⚕️ Осмотр"/>
+                        <ComboBoxItem Content="💬 Консультация"/>
+                        <ComboBoxItem Content="📊 Изменение состояния"/>
+                        <ComboBoxItem Content="🔬 Анализы"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <Button x:Name="btnApplyFilter" 
+                       Content="🔍 Применить" 
+                       Grid.Column="5"
+                       Click="BtnApplyFilter_Click"
+                       Background="#9C27B0"
+                       Foreground="White"
+                       Padding="15,5"
+                       Margin="5,15,0,0"
+                       HorizontalAlignment="Left"/>
+
+                <Button x:Name="btnClearFilter" 
+                       Content="✗ Сбросить" 
+                       Grid.Column="6"
+                       Click="BtnClearFilter_Click"
+                       Background="#757575"
+                       Foreground="White"
+                       Padding="15,5"
+                       Margin="5,15,0,0"/>
+            </Grid>
+        </Border>
+
+        <!-- Контейнер для разных режимов отображения -->
+        <Grid Grid.Row="3">
+            <!-- Режим списка -->
+            <DataGrid x:Name="dgRecordsList" 
+                     AutoGenerateColumns="False"
+                     IsReadOnly="True"
+                     SelectionMode="Single"
+                     RowHeight="40"
+                     AlternatingRowBackground="#f9f9f9"
+                     SelectionChanged="DgRecords_SelectionChanged"
+                     CanUserResizeRows="True">
+
+                <DataGrid.Columns>
+                    <!-- Иконка типа -->
+                    <DataGridTextColumn Header="Тип" 
+                                       Binding="{Binding RecordTypeIcon}" 
+                                       Width="50"
+                                       FontSize="20"/>
+
+                    <!-- Дата и время -->
+                    <DataGridTextColumn Header="Дата и время" 
+                                       Binding="{Binding FormattedDate}" 
+                                       Width="130"/>
+
+                    <!-- День недели -->
+                    <DataGridTextColumn Header="День" 
+                                       Binding="{Binding DayOfWeek}" 
+                                       Width="100"/>
+
+                    <!-- Тип записи -->
+                    <DataGridTextColumn Header="Тип записи" 
+                                       Binding="{Binding RecordTypeDisplay}" 
+                                       Width="150"/>
+
+                    <!-- Врач -->
+                    <DataGridTextColumn Header="Врач" 
+                                       Binding="{Binding DoctorName}" 
+                                       Width="200"/>
+
+                    <!-- Краткое описание -->
+                    <DataGridTemplateColumn Header="Краткое описание" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Description}" 
+                                          TextWrapping="Wrap"
+                                          Padding="5"
+                                          MaxHeight="100"
+                                          TextTrimming="CharacterEllipsis"
+                                          VerticalAlignment="Top"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Режим временной шкалы -->
+            <ScrollViewer x:Name="timelineView" 
+                         Visibility="Collapsed"
+                         VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="timelineContainer" Margin="20"/>
+            </ScrollViewer>
+
+            <!-- Режим группировки -->
+            <!-- Режим группировки - ИСПРАВЛЕННЫЙ -->
+            <ListView x:Name="groupedView"
+                     Visibility="Collapsed"
+                     SelectionChanged="GroupedView_SelectionChanged">
+                <!-- GridView будет создан программно в BuildGroupedView() -->
+                <ListView.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.HeaderTemplate>
+                            <DataTemplate>
+                                <Border Background="#E3F2FD" 
+                                       Padding="10,5"
+                                       Margin="0,5,0,2"
+                                       CornerRadius="3">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="📅 " 
+                                                  FontSize="16"
+                                                  Margin="0,0,8,0"/>
+                                        <TextBlock Text="{Binding Name}" 
+                                                  FontWeight="Bold"
+                                                  FontSize="14"
+                                                  Foreground="#1976D2"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </GroupStyle.HeaderTemplate>
+                    </GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
+        </Grid>
+
+        <!-- Заголовок деталей -->
+        <Border Grid.Row="4" Background="#e0e0e0" Padding="10" BorderBrush="#ddd" BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="lblRecordIcon" 
+                                  Text="📋" 
+                                  FontSize="16"
+                                  Margin="0,0,10,0"/>
+                        <TextBlock x:Name="lblRecordDate" 
+                                  Text="Дата: -" 
+                                  FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                        <TextBlock x:Name="lblRecordType" 
+                                  Text="Тип: -" 
+                                  Margin="0,0,20,0"/>
+                        <TextBlock x:Name="lblDoctor" 
+                                  Text="Врач: -"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock x:Name="lblRecordCount" 
+                          Grid.Column="1"
+                          Text="Всего записей: 0" 
+                          VerticalAlignment="Center"
+                          FontSize="11"
+                          Foreground="Gray"/>
+            </Grid>
+        </Border>
+
+        <!-- Детали записи -->
+        <Border Grid.Row="5" BorderBrush="#ccc" BorderThickness="1,0,0,0">
+            <TextBox x:Name="txtRecordDetails" 
+                    IsReadOnly="True"
+                    TextWrapping="Wrap"
+                    VerticalScrollBarVisibility="Auto"
+                    Padding="10"
+                    Background="#fafafa"
+                    FontSize="13"
+                    BorderThickness="0"/>
+        </Border>
+    </Grid>
+</Window>

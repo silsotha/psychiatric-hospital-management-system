@@ -1,0 +1,108 @@
+﻿<Window x:Class="PsychiatricHospitalWPF.Views.Patients.PatientEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Title="Новый пациент" 
+        Height="600" Width="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Шапка -->
+        <Border Grid.Row="0" Background="#4CAF50" Padding="15">
+            <TextBlock Text="Регистрация нового пациента" 
+                      FontSize="16" 
+                      FontWeight="Bold" 
+                      Foreground="White"/>
+        </Border>
+
+        <!-- Форма -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20">
+
+                <!-- ФИО -->
+                <Label Content="ФИО пациента:" FontWeight="SemiBold"/>
+                <TextBox x:Name="txtFullName" 
+                        Padding="8" 
+                        Height="35" 
+                        Margin="0,0,0,10"/>
+
+                <!-- Дата рождения -->
+                <Label Content="Дата рождения:" FontWeight="SemiBold"/>
+                <DatePicker x:Name="dpBirthDate" 
+                           Padding="8" 
+                           Height="35"
+                           Margin="0,0,0,10"
+                           DisplayDateEnd="{x:Static sys:DateTime.Now}"/>
+
+                <!-- Контактная информация -->
+                <Label Content="Контактная информация:" FontWeight="SemiBold"/>
+                <TextBox x:Name="txtContactInfo" 
+                        Padding="8" 
+                        Height="35"
+                        Margin="0,0,0,10"/>
+
+                <!-- Диагноз -->
+                <Label Content="Предварительный диагноз:" FontWeight="SemiBold"/>
+                <TextBox x:Name="txtDiagnosis" 
+                        Padding="8" 
+                        Height="80"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        VerticalScrollBarVisibility="Auto"
+                        Margin="0,0,0,10"/>
+
+                <!-- Палата -->
+                <Label Content="Палата (необязательно):" FontWeight="SemiBold"/>
+                <ComboBox x:Name="cmbWard" 
+                         Padding="8" 
+                         Height="35"
+                         Margin="0,0,0,10"/>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Кнопки -->
+        <Border Grid.Row="2" Background="#f5f5f5" Padding="15" BorderBrush="#ddd" BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock x:Name="lblError" 
+                          Grid.Column="0"
+                          Text=""
+                          Foreground="Red"
+                          VerticalAlignment="Center"
+                          TextWrapping="Wrap"
+                          Visibility="Collapsed"/>
+
+                <Button x:Name="btnSave" 
+                       Content="✓ Сохранить" 
+                       Grid.Column="1"
+                       Click="BtnSave_Click"
+                       Background="#4CAF50"
+                       Foreground="White"
+                       Padding="20,8"
+                       Margin="5,0"/>
+
+                <Button x:Name="btnCancel" 
+                       Content="✗ Отмена" 
+                       Grid.Column="2"
+                       Click="BtnCancel_Click"
+                       Background="#f44336"
+                       Foreground="White"
+                       Padding="20,8"
+                       Margin="5,0"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

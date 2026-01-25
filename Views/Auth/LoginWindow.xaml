@@ -1,0 +1,130 @@
+﻿<Window x:Class="PsychiatricHospitalWPF.Views.Auth.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Вход в систему" 
+        Height="500" Width="450"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <!-- Стиль для текстбоксов -->
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Margin" Value="0,5,0,5"/>
+        </Style>
+
+        <!-- Стиль для PasswordBox -->
+        <Style TargetType="PasswordBox">
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Margin" Value="0,5,0,5"/>
+        </Style>
+
+        <!-- Стиль для кнопок -->
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <!-- Стиль для заголовков -->
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,10,0,0"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Шапка -->
+        <Border Grid.Row="0" Background="#2196F3" Padding="20">
+            <StackPanel>
+                <TextBlock Text="ИС Психиатрической Больницы" 
+                          FontSize="20" 
+                          FontWeight="Bold" 
+                          Foreground="White"
+                          HorizontalAlignment="Center"/>
+                <TextBlock Text="Система управления" 
+                          FontSize="12" 
+                          Foreground="White"
+                          Opacity="0.9"
+                          HorizontalAlignment="Center"
+                          Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Форма входа -->
+        <StackPanel Grid.Row="1" 
+                    Margin="40,30,40,30"
+                    VerticalAlignment="Center">
+
+            <!-- Заголовок -->
+            <TextBlock Text="Вход в систему" 
+                      FontSize="18" 
+                      FontWeight="SemiBold"
+                      HorizontalAlignment="Center"
+                      Margin="0,0,0,20"/>
+
+            <!-- Имя пользователя -->
+            <Label Content="Имя пользователя:"/>
+            <TextBox x:Name="txtUsername" 
+                     TabIndex="0"/>
+
+            <!-- Пароль -->
+            <Label Content="Пароль:"/>
+            <PasswordBox x:Name="txtPassword" 
+                        TabIndex="1"
+                        KeyDown="TxtPassword_KeyDown"/>
+
+            <!-- Сообщение об ошибке -->
+            <TextBlock x:Name="lblError" 
+                      Text=""
+                      Foreground="Red"
+                      FontSize="12"
+                      Margin="0,10,0,0"
+                      TextWrapping="Wrap"
+                      Visibility="Collapsed"/>
+
+            <!-- Кнопки -->
+            <Grid Margin="0,25,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="btnLogin" 
+                       Content="Войти" 
+                       Grid.Column="0"
+                       Background="#4CAF50"
+                       Foreground="White"
+                       Click="BtnLogin_Click"
+                       TabIndex="2"/>
+
+                <Button x:Name="btnExit" 
+                       Content="Выход" 
+                       Grid.Column="1"
+                       Background="#f44336"
+                       Foreground="White"
+                       Click="BtnExit_Click"
+                       TabIndex="3"/>
+            </Grid>
+
+            <!-- Информация -->
+            <TextBlock Text="Для тестирования: dr_ivanov / password123" 
+                      FontSize="10"
+                      Foreground="Gray"
+                      HorizontalAlignment="Center"
+                      Margin="0,20,0,0"
+                      Opacity="0.7"/>
+        </StackPanel>
+    </Grid>
+</Window>

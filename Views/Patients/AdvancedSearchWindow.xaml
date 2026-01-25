@@ -1,0 +1,247 @@
+﻿<Window x:Class="PsychiatricHospitalWPF.Views.Patients.AdvancedSearchWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Расширенный поиск пациентов" 
+        Height="600" Width="900"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Шапка -->
+        <Border Grid.Row="0" Background="#9C27B0" Padding="15">
+            <TextBlock Text="🔍 Расширенный поиск пациентов" 
+                      FontSize="18" 
+                      FontWeight="Bold" 
+                      Foreground="White"/>
+        </Border>
+
+        <!-- Панель критериев поиска -->
+        <Border Grid.Row="1" Background="#f5f5f5" Padding="15" BorderBrush="#ddd" BorderThickness="0,0,0,1">
+            <StackPanel>
+                <TextBlock Text="Критерии поиска:" 
+                          FontSize="14" 
+                          FontWeight="SemiBold"
+                          Margin="0,0,0,10"/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- ФИО -->
+                    <Label Content="ФИО:" 
+                          Grid.Row="0" Grid.Column="0"
+                          VerticalAlignment="Center"
+                          Margin="0,0,10,0"/>
+                    <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,5">
+                        <TextBox x:Name="txtSearchName" 
+                                Height="30"
+                                Padding="5"
+                                VerticalContentAlignment="Center"/>
+                        <TextBlock Text="Например: Иванов, Петр, Сидорова Анна" 
+                                  FontSize="10"
+                                  Foreground="Gray"
+                                  Margin="5,2,0,0"/>
+                    </StackPanel>
+
+                    <!-- Номер карты -->
+                    <Label Content="№ Карты:" 
+                          Grid.Row="0" Grid.Column="2"
+                          VerticalAlignment="Center"
+                          Margin="10,0,10,0"/>
+                    <StackPanel Grid.Row="0" Grid.Column="3" Margin="0,5">
+                        <TextBox x:Name="txtSearchCardNumber" 
+                                Height="30"
+                                Padding="5"
+                                VerticalContentAlignment="Center"/>
+                        <TextBlock Text="Например: MK-2024-001 или просто 001" 
+                                  FontSize="10"
+                                  Foreground="Gray"
+                                  Margin="5,2,0,0"/>
+                    </StackPanel>
+
+                    <!-- Палата -->
+                    <Label Content="Палата:" 
+                          Grid.Row="1" Grid.Column="0"
+                          VerticalAlignment="Center"
+                          Margin="0,0,10,0"/>
+                    <ComboBox x:Name="cmbSearchWard" 
+                             Grid.Row="1" Grid.Column="1"
+                             Height="30"
+                             Padding="5"
+                             Margin="0,5"/>
+
+                    <!-- Статус -->
+                    <Label Content="Статус:" 
+                          Grid.Row="1" Grid.Column="2"
+                          VerticalAlignment="Center"
+                          Margin="10,0,10,0"/>
+                    <ComboBox x:Name="cmbSearchStatus" 
+                             Grid.Row="1" Grid.Column="3"
+                             Height="30"
+                             Padding="5"
+                             Margin="0,5">
+                        <ComboBoxItem Content="Все" IsSelected="True"/>
+                        <ComboBoxItem Content="На лечении"/>
+                        <ComboBoxItem Content="Выписаны"/>
+                    </ComboBox>
+                </Grid>
+
+                <!-- Информационное сообщение -->
+                <Border Background="#E3F2FD" 
+                       BorderBrush="#2196F3" 
+                       BorderThickness="1"
+                       Padding="10"
+                       Margin="0,10,0,10">
+                    <StackPanel>
+                        <TextBlock Text="💡 Подсказки по поиску:" 
+                                  FontWeight="SemiBold"
+                                  Foreground="#1976D2"/>
+                        <TextBlock Margin="15,5,0,0">
+                            <Run Text="• ФИО:"/>
+                            <Run Text="поиск по любой части имени (например, &quot;Иван&quot; найдет &quot;Иванов&quot;, &quot;Иванченко&quot;)" Foreground="Gray"/>
+                        </TextBlock>
+                        <TextBlock Margin="15,2,0,0">
+                            <Run Text="• Номер карты:"/>
+                            <Run Text="можно ввести полный номер (MK-2024-001) или часть (001, 2024)" Foreground="Gray"/>
+                        </TextBlock>
+                        <TextBlock Margin="15,2,0,0">
+                            <Run Text="• Можно использовать несколько критериев одновременно" Foreground="Gray"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Кнопки поиска -->
+                <StackPanel Orientation="Horizontal" 
+                           HorizontalAlignment="Right"
+                           Margin="0,5,0,0">
+                    <Button x:Name="btnSearch" 
+                           Content="🔍 Найти" 
+                           Click="BtnSearch_Click"
+                           Background="#4CAF50"
+                           Foreground="White"
+                           Padding="20,8"
+                           Margin="5,0"/>
+
+                    <Button x:Name="btnClearFilters" 
+                           Content="✗ Сбросить фильтры" 
+                           Click="BtnClearFilters_Click"
+                           Background="#757575"
+                           Foreground="White"
+                           Padding="20,8"
+                           Margin="5,0"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Результаты поиска -->
+        <DataGrid x:Name="dgSearchResults" 
+                 Grid.Row="2"
+                 AutoGenerateColumns="False"
+                 IsReadOnly="True"
+                 SelectionMode="Single"
+                 RowHeight="35"
+                 AlternatingRowBackground="#f9f9f9"
+                 GridLinesVisibility="Horizontal"
+                 HeadersVisibility="Column"
+                 MouseDoubleClick="DgSearchResults_MouseDoubleClick">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="№ Карты" 
+                                   Binding="{Binding CardNumber}" 
+                                   Width="120"/>
+
+                <DataGridTextColumn Header="ФИО" 
+                                   Binding="{Binding FullName}" 
+                                   Width="200"/>
+
+                <DataGridTextColumn Header="Дата рождения (возраст)" 
+                                   Binding="{Binding BirthDateWithAge}" 
+                                   Width="180"/>
+
+                <DataGridTemplateColumn Header="Диагноз" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Diagnosis}" 
+                                      TextWrapping="Wrap"
+                                      Padding="5"
+                                      VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTextColumn Header="Палата" 
+                                   Binding="{Binding WardNumber}" 
+                                   Width="70"/>
+
+                <DataGridTextColumn Header="Статус" 
+                                   Binding="{Binding StatusDisplay}" 
+                                   Width="100">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Status}" Value="active">
+                                    <Setter Property="Foreground" Value="Green"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="discharged">
+                                    <Setter Property="Foreground" Value="Gray"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <!-- Кнопка перехода к медкарте -->
+                <DataGridTemplateColumn Header="Действия" Width="150">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="📋 Медкарта" 
+                                       Click="BtnOpenMedCard_Click"
+                                       Padding="8,4"
+                                       Background="#03A9F4"
+                                       Foreground="White"
+                                       BorderThickness="0"
+                                       Cursor="Hand"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Строка состояния -->
+        <Border Grid.Row="3" Background="#f5f5f5" Padding="10" BorderBrush="#ddd" BorderThickness="0,1,0,0">
+            <Grid>
+                <TextBlock x:Name="lblSearchInfo" 
+                          Text="Введите критерии поиска и нажмите &quot;Найти&quot;" 
+                          FontSize="12"/>
+
+                <Button x:Name="btnClose" 
+                       Content="Закрыть" 
+                       HorizontalAlignment="Right"
+                       Click="BtnClose_Click"
+                       Padding="15,5"
+                       Background="#757575"
+                       Foreground="White"
+                       BorderThickness="0"
+                       Cursor="Hand"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

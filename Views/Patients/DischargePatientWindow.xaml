@@ -1,0 +1,134 @@
+﻿<Window x:Class="PsychiatricHospitalWPF.Views.Patients.DischargePatientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Title="Выписка пациента" 
+        Height="650" Width="550"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Шапка -->
+        <Border Grid.Row="0" Background="#f44336" Padding="15">
+            <StackPanel>
+                <TextBlock Text="Выписка пациента" 
+                          FontSize="16" 
+                          FontWeight="Bold" 
+                          Foreground="White"/>
+                <TextBlock x:Name="txtPatientInfo" 
+                          Text="" 
+                          FontSize="12" 
+                          Foreground="White"
+                          Opacity="0.9"
+                          Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Форма -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20">
+
+                <!-- Дата выписки -->
+                <Label Content="Дата выписки:" FontWeight="SemiBold"/>
+                <DatePicker x:Name="dpDischargeDate" 
+                           Padding="8" 
+                           Height="35"
+                           Margin="0,0,0,15"
+                           DisplayDateEnd="{x:Static sys:DateTime.Now}"/>
+
+                <!-- Причина выписки -->
+                <Label Content="Причина выписки:" FontWeight="SemiBold"/>
+                <ComboBox x:Name="cmbDischargeReason" 
+                         Padding="8" 
+                         Height="35"
+                         Margin="0,0,0,15">
+                    <ComboBoxItem Content="Выздоровление" IsSelected="True"/>
+                    <ComboBoxItem Content="Перевод в другое учреждение"/>
+                    <ComboBoxItem Content="По требованию пациента/родственников"/>
+                    <ComboBoxItem Content="Летальный исход"/>
+                    <ComboBoxItem Content="Другое"/>
+                </ComboBox>
+
+                <!-- Заключительный диагноз -->
+                <Label Content="Заключительный диагноз:" FontWeight="SemiBold"/>
+                <TextBox x:Name="txtFinalDiagnosis" 
+                        Padding="10" 
+                        Height="120"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        VerticalScrollBarVisibility="Auto"
+                        Margin="0,0,0,10"/>
+
+                <TextBlock Text="* Все поля обязательны для заполнения"
+                          FontSize="11"
+                          Foreground="Gray"
+                          FontStyle="Italic"/>
+
+                <!-- Предупреждение -->
+                <Border Background="#FFF3E0" 
+                       BorderBrush="#FF9800" 
+                       BorderThickness="1"
+                       Padding="10"
+                       Margin="0,15,0,0">
+                    <StackPanel>
+                        <TextBlock Text="⚠️ Внимание!" 
+                                  FontWeight="Bold"
+                                  Foreground="#F57C00"/>
+                        <TextBlock Text="После выписки пациента:" 
+                                  Margin="0,5,0,0"/>
+                        <TextBlock Text="• Статус изменится на &quot;Выписан&quot;" 
+                                  Margin="10,2,0,0"/>
+                        <TextBlock Text="• Место в палате будет освобождено" 
+                                  Margin="10,2,0,0"/>
+                        <TextBlock Text="• Повторная выписка невозможна" 
+                                  Margin="10,2,0,0"/>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Кнопки -->
+        <Border Grid.Row="2" Background="#f5f5f5" Padding="15" BorderBrush="#ddd" BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock x:Name="lblError" 
+                          Grid.Column="0"
+                          Text=""
+                          Foreground="Red"
+                          VerticalAlignment="Center"
+                          TextWrapping="Wrap"
+                          Visibility="Collapsed"/>
+
+                <Button x:Name="btnDischarge" 
+                       Content="✓ Выписать" 
+                       Grid.Column="1"
+                       Click="BtnDischarge_Click"
+                       Background="#f44336"
+                       Foreground="White"
+                       Padding="20,8"
+                       Margin="5,0"/>
+
+                <Button x:Name="btnCancel" 
+                       Content="✗ Отмена" 
+                       Grid.Column="2"
+                       Click="BtnCancel_Click"
+                       Background="#757575"
+                       Foreground="White"
+                       Padding="20,8"
+                       Margin="5,0"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
