@@ -13,7 +13,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Шапка -->
+        <!-- шапка -->
         <Border Grid.Row="0" Background="#f44336" Padding="15">
             <TextBlock x:Name="txtTitle" 
                       Text="Укажите причину отмены назначения" 
@@ -22,7 +22,7 @@
                       Foreground="White"/>
         </Border>
 
-        <!-- Форма -->
+        <!-- форма -->
         <StackPanel Grid.Row="1" Margin="20">
             <Label Content="Причина:*" FontWeight="SemiBold"/>
             <TextBox x:Name="txtReason" 
@@ -40,7 +40,7 @@
                       Margin="5,0,0,0"/>
         </StackPanel>
 
-        <!-- Кнопки -->
+        <!-- кнопки -->
         <Border Grid.Row="2" Background="#f5f5f5" Padding="15" BorderBrush="#ddd" BorderThickness="0,1,0,0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button x:Name="btnOk" 

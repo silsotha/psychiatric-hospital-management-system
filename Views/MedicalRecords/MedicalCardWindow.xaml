@@ -22,7 +22,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Шапка -->
+        <!-- шапка -->
         <Border Grid.Row="0" Background="#673AB7" Padding="15">
             <StackPanel>
                 <TextBlock x:Name="txtPatientName" 
@@ -39,7 +39,7 @@
             </StackPanel>
         </Border>
 
-        <!-- Панель кнопок -->
+        <!-- панель кнопок -->
         <Border Grid.Row="1" Background="#f5f5f5" Padding="10" BorderBrush="#ddd" BorderThickness="0,0,0,1">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -73,7 +73,7 @@
                            Margin="0,0,5,0"/>
                 </StackPanel>
 
-                <!-- Переключатель режимов отображения -->
+                <!-- переключатель режимов отображения -->
                 <StackPanel Orientation="Horizontal" Grid.Column="1">
                     <Label Content="Режим:" VerticalAlignment="Center"/>
                     <ComboBox x:Name="cmbViewMode" 
@@ -88,7 +88,7 @@
             </Grid>
         </Border>
 
-        <!-- Панель фильтров -->
+        <!-- панель фильтров -->
         <Border Grid.Row="2" Background="#f9f9f9" Padding="10" BorderBrush="#ddd" BorderThickness="0,0,0,1">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -145,9 +145,9 @@
             </Grid>
         </Border>
 
-        <!-- Контейнер для разных режимов отображения -->
+        <!-- контейнер для разных режимов отображения -->
         <Grid Grid.Row="3">
-            <!-- Режим списка -->
+            <!-- режим списка -->
             <DataGrid x:Name="dgRecordsList" 
                      AutoGenerateColumns="False"
                      IsReadOnly="True"
@@ -158,33 +158,33 @@
                      CanUserResizeRows="True">
 
                 <DataGrid.Columns>
-                    <!-- Иконка типа -->
+                    <!-- иконка типа -->
                     <DataGridTextColumn Header="Тип" 
                                        Binding="{Binding RecordTypeIcon}" 
                                        Width="50"
                                        FontSize="20"/>
 
-                    <!-- Дата и время -->
+                    <!-- дата и время -->
                     <DataGridTextColumn Header="Дата и время" 
                                        Binding="{Binding FormattedDate}" 
                                        Width="130"/>
 
-                    <!-- День недели -->
+                    <!-- день недели -->
                     <DataGridTextColumn Header="День" 
                                        Binding="{Binding DayOfWeek}" 
                                        Width="100"/>
 
-                    <!-- Тип записи -->
+                    <!-- тип записи -->
                     <DataGridTextColumn Header="Тип записи" 
                                        Binding="{Binding RecordTypeDisplay}" 
                                        Width="150"/>
 
-                    <!-- Врач -->
+                    <!-- врач -->
                     <DataGridTextColumn Header="Врач" 
                                        Binding="{Binding DoctorName}" 
                                        Width="200"/>
 
-                    <!-- Краткое описание -->
+                    <!-- краткое описание -->
                     <DataGridTemplateColumn Header="Краткое описание" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
@@ -200,15 +200,14 @@
                 </DataGrid.Columns>
             </DataGrid>
 
-            <!-- Режим временной шкалы -->
+            <!-- режим временной шкалы -->
             <ScrollViewer x:Name="timelineView" 
                          Visibility="Collapsed"
                          VerticalScrollBarVisibility="Auto">
                 <StackPanel x:Name="timelineContainer" Margin="20"/>
             </ScrollViewer>
 
-            <!-- Режим группировки -->
-            <!-- Режим группировки - ИСПРАВЛЕННЫЙ -->
+            <!-- режим группировки -->
             <ListView x:Name="groupedView"
                      Visibility="Collapsed"
                      SelectionChanged="GroupedView_SelectionChanged">
@@ -238,7 +237,7 @@
             </ListView>
         </Grid>
 
-        <!-- Заголовок деталей -->
+        <!-- заголовок деталей -->
         <Border Grid.Row="4" Background="#e0e0e0" Padding="10" BorderBrush="#ddd" BorderThickness="0,1,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -274,7 +273,7 @@
             </Grid>
         </Border>
 
-        <!-- Детали записи -->
+        <!-- детали записи -->
         <Border Grid.Row="5" BorderBrush="#ccc" BorderThickness="1,0,0,0">
             <TextBox x:Name="txtRecordDetails" 
                     IsReadOnly="True"

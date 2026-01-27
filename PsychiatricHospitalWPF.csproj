@@ -75,10 +75,13 @@
     <Compile Include="Models\Prescription.cs" />
     <Compile Include="Models\PrescriptionExecution.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\Ward.cs" />
     <Compile Include="Services\AuthService.cs" />
     <Compile Include="Services\MedicalRecordService.cs" />
     <Compile Include="Services\PatientService.cs" />
     <Compile Include="Services\PrescriptionService.cs" />
+    <Compile Include="Services\ReportService.cs" />
+    <Compile Include="Services\WardService.cs" />
     <Compile Include="Utils\DatabaseConnection.cs" />
     <Compile Include="Utils\PasswordHelper.cs" />
     <Compile Include="Utils\UserSession.cs" />
@@ -90,9 +93,6 @@
     </Compile>
     <Compile Include="Views\MedicalRecords\MedicalCardWindow.xaml.cs">
       <DependentUpon>MedicalCardWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Patients\AdvancedSearchWindow.xaml.cs">
-      <DependentUpon>AdvancedSearchWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Patients\DischargePatientWindow.xaml.cs">
       <DependentUpon>DischargePatientWindow.xaml</DependentUpon>
@@ -111,6 +111,15 @@
     </Compile>
     <Compile Include="Views\Prescriptions\PrescriptionsWindow.xaml.cs">
       <DependentUpon>PrescriptionsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Reports\ReportsWindow.xaml.cs">
+      <DependentUpon>ReportsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Wards\TransferPatientWindow.xaml.cs">
+      <DependentUpon>TransferPatientWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Wards\WardManagementWindow.xaml.cs">
+      <DependentUpon>WardManagementWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -136,10 +145,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Patients\AdvancedSearchWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Patients\DischargePatientWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -161,6 +166,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Prescriptions\PrescriptionsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Reports\ReportsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Wards\TransferPatientWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Wards\WardManagementWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

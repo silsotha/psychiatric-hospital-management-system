@@ -14,7 +14,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Шапка -->
+        <!-- шапка -->
         <Border Grid.Row="0" Background="#f44336" Padding="15">
             <StackPanel>
                 <TextBlock Text="Выписка пациента" 
@@ -30,11 +30,11 @@
             </StackPanel>
         </Border>
 
-        <!-- Форма -->
+        <!-- форма -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="20">
 
-                <!-- Дата выписки -->
+                <!-- дата выписки -->
                 <Label Content="Дата выписки:" FontWeight="SemiBold"/>
                 <DatePicker x:Name="dpDischargeDate" 
                            Padding="8" 
@@ -42,7 +42,7 @@
                            Margin="0,0,0,15"
                            DisplayDateEnd="{x:Static sys:DateTime.Now}"/>
 
-                <!-- Причина выписки -->
+                <!-- причина выписки -->
                 <Label Content="Причина выписки:" FontWeight="SemiBold"/>
                 <ComboBox x:Name="cmbDischargeReason" 
                          Padding="8" 
@@ -55,7 +55,7 @@
                     <ComboBoxItem Content="Другое"/>
                 </ComboBox>
 
-                <!-- Заключительный диагноз -->
+                <!-- заключительный диагноз -->
                 <Label Content="Заключительный диагноз:" FontWeight="SemiBold"/>
                 <TextBox x:Name="txtFinalDiagnosis" 
                         Padding="10" 
@@ -70,7 +70,7 @@
                           Foreground="Gray"
                           FontStyle="Italic"/>
 
-                <!-- Предупреждение -->
+                <!-- предупреждение -->
                 <Border Background="#FFF3E0" 
                        BorderBrush="#FF9800" 
                        BorderThickness="1"
@@ -94,7 +94,7 @@
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Кнопки -->
+        <!-- кнопки -->
         <Border Grid.Row="2" Background="#f5f5f5" Padding="15" BorderBrush="#ddd" BorderThickness="0,1,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>

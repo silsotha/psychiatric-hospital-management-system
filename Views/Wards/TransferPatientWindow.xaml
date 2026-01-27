@@ -1,0 +1,114 @@
+﻿<Window x:Class="PsychiatricHospitalWPF.Views.Wards.TransferPatientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Перевод пациента" 
+        Height="500" Width="550"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- шапка -->
+        <Border Grid.Row="0" Background="#9C27B0" Padding="15">
+            <StackPanel>
+                <TextBlock Text="Перевод пациента в другую палату" 
+                          FontSize="16" 
+                          FontWeight="Bold" 
+                          Foreground="White"/>
+                <TextBlock x:Name="txtPatientInfo" 
+                          Text="" 
+                          FontSize="12" 
+                          Foreground="White"
+                          Opacity="0.9"
+                          Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- форма -->
+        <StackPanel Grid.Row="1" Margin="20">
+
+            <!-- текущая палата -->
+            <Border Background="#FFF3E0" 
+                   BorderBrush="#FF9800" 
+                   BorderThickness="1"
+                   Padding="10"
+                   Margin="0,0,0,15">
+                <StackPanel>
+                    <TextBlock Text="Текущая палата:" 
+                              FontWeight="SemiBold"
+                              Margin="0,0,0,5"/>
+                    <TextBlock x:Name="txtCurrentWard" 
+                              Text=""
+                              FontSize="14"
+                              Foreground="#F57C00"/>
+                </StackPanel>
+            </Border>
+
+            <!-- новая палата -->
+            <Label Content="Новая палата:*" FontWeight="SemiBold"/>
+            <ComboBox x:Name="cmbNewWard" 
+                     Height="35"
+                     Padding="8"
+                     Margin="0,0,0,15"/>
+
+            <!-- причина перевода -->
+            <Label Content="Причина перевода:" FontWeight="SemiBold"/>
+            <TextBox x:Name="txtReason" 
+                    Height="80"
+                    Padding="10"
+                    TextWrapping="Wrap"
+                    AcceptsReturn="True"
+                    VerticalScrollBarVisibility="Auto"
+                    Margin="0,0,0,5"/>
+            <TextBlock Text="Опционально, но рекомендуется указать"
+                      FontSize="11"
+                      Foreground="Gray"
+                      Margin="5,0,0,0"/>
+
+        </StackPanel>
+
+        <!-- кнопки -->
+        <Border Grid.Row="2" Background="#f5f5f5" Padding="15" BorderBrush="#ddd" BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock x:Name="lblError" 
+                          Grid.Column="0"
+                          Text=""
+                          Foreground="Red"
+                          VerticalAlignment="Center"
+                          TextWrapping="Wrap"
+                          Visibility="Collapsed"/>
+
+                <Button x:Name="btnTransfer" 
+                       Content="✓ Перевести" 
+                       Grid.Column="1"
+                       Click="BtnTransfer_Click"
+                       Background="#4CAF50"
+                       Foreground="White"
+                       Padding="20,8"
+                       Margin="5,0"
+                       Cursor="Hand"/>
+
+                <Button x:Name="btnCancel" 
+                       Content="✗ Отмена" 
+                       Grid.Column="2"
+                       Click="BtnCancel_Click"
+                       Background="#757575"
+                       Foreground="White"
+                       Padding="20,8"
+                       Margin="5,0"
+                       Cursor="Hand"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

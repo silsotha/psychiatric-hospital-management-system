@@ -13,7 +13,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Шапка -->
+        <!-- шапка -->
         <Border Grid.Row="0" Background="#2196F3" Padding="15">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -28,7 +28,7 @@
                           VerticalAlignment="Center"/>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <!-- ДОБАВЛЕНО: Информация о пользователе -->
+                    <!-- дОБАВЛЕНО: Информация о пользователе -->
                     <TextBlock x:Name="lblUserInfo"
                               Text="Пользователь"
                               Foreground="White"
@@ -48,14 +48,14 @@
             </Grid>
         </Border>
 
-        <!-- Главное меню -->
+        <!-- главное меню -->
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Панель быстрого доступа -->
+            <!-- панель быстрого доступа -->
             <Border Grid.Row="0" Background="#f5f5f5" Padding="15" BorderBrush="#ddd" BorderThickness="0,0,0,1">
                 <StackPanel Orientation="Horizontal">
                     <Button x:Name="btnPatients" 
@@ -63,7 +63,7 @@
                            Click="BtnPatients_Click"
                            Background="#4CAF50"
                            Foreground="White"
-                           Padding="20,10"
+                           Padding="12,10"
                            Margin="0,0,10,0"
                            FontSize="14"
                            BorderThickness="0"
@@ -92,7 +92,7 @@
                 </StackPanel>
             </Border>
 
-            <!-- Приветственная панель -->
+            <!-- приветственная панель -->
             <Grid Grid.Row="1">
                 <StackPanel HorizontalAlignment="Center" 
                            VerticalAlignment="Center"
@@ -155,10 +155,10 @@
             </Grid>
         </Grid>
 
-        <!-- Нижняя панель (статус бар) -->
+        <!-- нижняя панель (статус бар) -->
         <Border Grid.Row="2" Background="#263238" Padding="10">
             <Grid>
-                <TextBlock Text="© 2024 Система управления психиатрической больницей" 
+                <TextBlock Text="© 2025-2026 Система управления психиатрической больницей" 
                           Foreground="White"
                           FontSize="11"
                           VerticalAlignment="Center"/>

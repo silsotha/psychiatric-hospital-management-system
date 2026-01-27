@@ -14,7 +14,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Шапка -->
+        <!-- шапка -->
         <Border Grid.Row="0" Background="#4CAF50" Padding="15">
             <TextBlock Text="Регистрация нового пациента" 
                       FontSize="16" 
@@ -22,7 +22,7 @@
                       Foreground="White"/>
         </Border>
 
-        <!-- Форма -->
+        <!-- форма -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="20">
 
@@ -33,7 +33,7 @@
                         Height="35" 
                         Margin="0,0,0,10"/>
 
-                <!-- Дата рождения -->
+                <!-- дата рождения -->
                 <Label Content="Дата рождения:" FontWeight="SemiBold"/>
                 <DatePicker x:Name="dpBirthDate" 
                            Padding="8" 
@@ -41,14 +41,14 @@
                            Margin="0,0,0,10"
                            DisplayDateEnd="{x:Static sys:DateTime.Now}"/>
 
-                <!-- Контактная информация -->
+                <!-- контактная информация -->
                 <Label Content="Контактная информация:" FontWeight="SemiBold"/>
                 <TextBox x:Name="txtContactInfo" 
                         Padding="8" 
                         Height="35"
                         Margin="0,0,0,10"/>
 
-                <!-- Диагноз -->
+                <!-- диагноз -->
                 <Label Content="Предварительный диагноз:" FontWeight="SemiBold"/>
                 <TextBox x:Name="txtDiagnosis" 
                         Padding="8" 
@@ -58,7 +58,7 @@
                         VerticalScrollBarVisibility="Auto"
                         Margin="0,0,0,10"/>
 
-                <!-- Палата -->
+                <!-- палата -->
                 <Label Content="Палата (необязательно):" FontWeight="SemiBold"/>
                 <ComboBox x:Name="cmbWard" 
                          Padding="8" 
@@ -68,7 +68,7 @@
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Кнопки -->
+        <!-- кнопки -->
         <Border Grid.Row="2" Background="#f5f5f5" Padding="15" BorderBrush="#ddd" BorderThickness="0,1,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>

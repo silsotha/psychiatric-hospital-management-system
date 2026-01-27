@@ -1,108 +1,157 @@
 ﻿using PsychiatricHospitalWPF.Utils;
 using PsychiatricHospitalWPF.Views.Auth;
-using PsychiatricHospitalWPF.Views.MedicalRecords;
 using PsychiatricHospitalWPF.Views.Patients;
+using PsychiatricHospitalWPF.Views.Reports;
+using PsychiatricHospitalWPF.Views.Wards;
+using System;
 using System.Windows;
 
 namespace PsychiatricHospitalWPF
 {
     public partial class MainWindow : Window
     {
-        // Хранилище для единственного экземпляра окна списка пациентов
-        private PatientsListWindow patientsListWindow = null;
+        // ссылки на открытые окна для предотвращения дублирования
+        private Window patientsWindow = null;
+        private WardManagementWindow wardManagementWindow = null;
+        private ReportsWindow reportsWindow = null;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            lblUserInfo.Text = string.Format("Пользователь: {0} ({1})",
-                UserSession.CurrentUser.FullName,
-                UserSession.CurrentUser.Role);
+            // отображаем информацию о текущем пользователе
+            if (UserSession.IsAuthenticated)
+            {
+                lblUserInfo.Text = string.Format("Пользователь: {0} ({1})",
+                    UserSession.CurrentUser.FullName,
+                    GetRoleDisplayName(UserSession.CurrentUser.Role));
+            }
+        }
+
+        private string GetRoleDisplayName(string role)
+        {
+            switch (role?.ToLower())
+            {
+                case "doctor":
+                    return "Врач";
+                case "nurse":
+                    return "Медсестра";
+                case "admin":
+                    return "Администратор";
+                default:
+                    return role;
+            }
         }
 
         private void BtnPatients_Click(object sender, RoutedEventArgs e)
         {
-            OpenPatientsListWindow();
-        }
-
-        /// <summary>
-        /// Открытие окна списка пациентов (единственный экземпляр)
-        /// </summary>
-        private void OpenPatientsListWindow()
-        {
-            // Проверяем, существует ли уже окно
-            if (patientsListWindow != null)
+            // если окно уже открыто - активируем его
+            if (patientsWindow != null && patientsWindow.IsLoaded)
             {
-                // Окно существует - активируем его
-                if (patientsListWindow.IsLoaded)
-                {
-                    // Если окно свернуто - разворачиваем
-                    if (patientsListWindow.WindowState == WindowState.Minimized)
-                    {
-                        patientsListWindow.WindowState = WindowState.Normal;
-                    }
-
-                    // Активируем и переносим на передний план
-                    patientsListWindow.Activate();
-                    patientsListWindow.Focus();
-                    return;
-                }
+                patientsWindow.Activate();
+                patientsWindow.WindowState = WindowState.Normal;
+                return;
             }
 
-            // Создаем новое окно
-            patientsListWindow = new PatientsListWindow();
+            // создаём новое окно
+            patientsWindow = new PatientsListWindow();
 
-            // Подписываемся на событие закрытия, чтобы обнулить ссылку
-            patientsListWindow.Closed += (s, args) => patientsListWindow = null;
+            // подписываемся на событие закрытия для очистки ссылки
+            patientsWindow.Closed += (s, args) => patientsWindow = null;
 
-            patientsListWindow.Show();
+            patientsWindow.Show();
         }
 
         private void BtnWards_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Открыть окно управления палатами
-            MessageBox.Show(
-                "Функционал управления палатами в разработке",
-                "Информация",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            // если окно уже открыто - активируем его
+            if (wardManagementWindow != null && wardManagementWindow.IsLoaded)
+            {
+                wardManagementWindow.Activate();
+                wardManagementWindow.WindowState = WindowState.Normal;
+                return;
+            }
+
+            // создаём новое окно
+            wardManagementWindow = new WardManagementWindow();
+
+            // подписываемся на событие закрытия для очистки ссылки
+            wardManagementWindow.Closed += (s, args) => wardManagementWindow = null;
+
+            wardManagementWindow.Show();
         }
 
         private void BtnReports_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Открыть окно отчетов
-            MessageBox.Show(
-                "Функционал отчетов в разработке",
-                "Информация",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            // если окно уже открыто - активируем его
+            if (reportsWindow != null && reportsWindow.IsLoaded)
+            {
+                reportsWindow.Activate();
+                reportsWindow.WindowState = WindowState.Normal;
+                return;
+            }
+
+            // создаём новое окно
+            reportsWindow = new ReportsWindow();
+
+            // подписываемся на событие закрытия для очистки ссылки
+            reportsWindow.Closed += (s, args) => reportsWindow = null;
+
+            reportsWindow.Show();
         }
 
         private void BtnLogout_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show(
-                "Вы действительно хотите выйти?",
+                "Вы уверены, что хотите выйти из системы?",
                 "Подтверждение",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
             {
-                // Закрываем все дочерние окна
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window != this && window.IsLoaded)
-                    {
-                        window.Close();
-                    }
-                }
-
+                // очищаем сессию
                 UserSession.Logout();
 
+                // закрываем все дочерние окна
+                CloseAllChildWindows();
+
+                // открываем окно авторизации
                 var loginWindow = new LoginWindow();
                 loginWindow.Show();
+
+                // закрываем главное окно
                 this.Close();
             }
+        }
+
+        private void CloseAllChildWindows()
+        {
+            // закрываем все открытые окна
+            if (patientsWindow != null && patientsWindow.IsLoaded)
+            {
+                patientsWindow.Close();
+                patientsWindow = null;
+            }
+
+            if (wardManagementWindow != null && wardManagementWindow.IsLoaded)
+            {
+                wardManagementWindow.Close();
+                wardManagementWindow = null;
+            }
+
+            if (reportsWindow != null && reportsWindow.IsLoaded)
+            {
+                reportsWindow.Close();
+                reportsWindow = null;
+            }
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            // при закрытии главного окна закрываем все дочерние
+            CloseAllChildWindows();
+            base.OnClosing(e);
         }
     }
 }

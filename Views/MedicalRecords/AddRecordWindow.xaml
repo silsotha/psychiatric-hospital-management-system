@@ -14,7 +14,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Шапка -->
+        <!-- шапка -->
         <Border Grid.Row="0" Background="#673AB7" Padding="15">
             <StackPanel>
                 <TextBlock Text="Новая медицинская запись" 
@@ -30,11 +30,11 @@
             </StackPanel>
         </Border>
 
-        <!-- Форма -->
+        <!-- форма -->
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="20">
 
-                <!-- Дата -->
+                <!-- дата -->
                 <Label Content="Дата записи:" FontWeight="SemiBold"/>
                 <DatePicker x:Name="dpRecordDate" 
                            Padding="8" 
@@ -42,7 +42,7 @@
                            Margin="0,0,0,15"
                            DisplayDateEnd="{x:Static sys:DateTime.Now}"/>
 
-                <!-- Время -->
+                <!-- время -->
                 <Label Content="Время (HH:mm):" FontWeight="SemiBold"/>
                 <TextBox x:Name="txtRecordTime" 
                         Padding="10" 
@@ -55,7 +55,7 @@
                           Foreground="Gray"
                           Margin="5,0,0,15"/>
 
-                <!-- ТИП ЗАПИСИ (НОВОЕ) -->
+                <!-- тип записи -->
                 <Label Content="Тип записи:" FontWeight="SemiBold"/>
                 <ComboBox x:Name="cmbRecordType" 
                          Padding="8" 
@@ -71,7 +71,7 @@
                           Foreground="Gray"
                           Margin="5,2,0,15"/>
 
-                <!-- Описание -->
+                <!-- описание -->
                 <Label Content="Описание состояния / Заключение:" FontWeight="SemiBold"/>
                 <TextBox x:Name="txtDescription" 
                         Padding="10" 
@@ -82,14 +82,14 @@
                         Margin="0,0,0,5"
                         TextChanged="TxtDescription_TextChanged"/>
 
-                <!-- Счетчик символов -->
+                <!-- счетчик символов -->
                 <StackPanel Orientation="Horizontal" Margin="5,0,0,10">
                     <TextBlock x:Name="lblCharCount" 
                               Text="Символов: 0 (минимум 10)"
                               FontSize="11"/>
                 </StackPanel>
 
-                <!-- Подсказки -->
+                <!-- подсказки -->
                 <Border Background="#E8F5E9" 
                        BorderBrush="#4CAF50" 
                        BorderThickness="1"
@@ -121,7 +121,7 @@
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Кнопки -->
+        <!-- кнопки -->
         <Border Grid.Row="2" Background="#f5f5f5" Padding="15" BorderBrush="#ddd" BorderThickness="0,1,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>

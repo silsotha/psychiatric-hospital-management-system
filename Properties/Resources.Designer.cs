@@ -15,9 +15,9 @@ namespace PsychiatricHospitalWPF.Properties
     /// <summary>
     ///   Класс ресурсов со строгим типом для поиска локализованных строк и пр.
     /// </summary>
-    // Этот класс был автоматически создан при помощи StronglyTypedResourceBuilder
+    // этот класс был автоматически создан при помощи StronglyTypedResourceBuilder
     // класс с помощью таких средств, как ResGen или Visual Studio.
-    // Для добавления или удаления члена измените файл .ResX, а затем перезапустите ResGen
+    // для добавления или удаления члена измените файл .ResX, а затем перезапустите ResGen
     // с параметром /str или заново постройте свой VS-проект.
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

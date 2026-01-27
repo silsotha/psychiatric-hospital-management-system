@@ -32,7 +32,7 @@ namespace PsychiatricHospitalWPF.Views.MedicalRecords
             dpRecordDate.DisplayDateEnd = DateTime.Now;
             txtRecordTime.Text = DateTime.Now.ToString("HH:mm");
 
-            // Подписываемся на события для валидации времени
+            // подписываемся на события для валидации времени
             txtRecordTime.PreviewTextInput += TxtRecordTime_PreviewTextInput;
             txtRecordTime.PreviewKeyDown += TxtRecordTime_PreviewKeyDown;
         }
@@ -40,7 +40,7 @@ namespace PsychiatricHospitalWPF.Views.MedicalRecords
         // валидация ввода времени - только цифры
         private void TxtRecordTime_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            // Разрешаем только цифры
+            // разрешаем только цифры
             if (!char.IsDigit(e.Text, 0))
             {
                 e.Handled = true;
@@ -117,7 +117,7 @@ namespace PsychiatricHospitalWPF.Views.MedicalRecords
 
                         if (digitsOnly.Length >= 4)
                         {
-                            // Проверяем минуты
+                            // проверяем минуты
                             int minutes = int.Parse(digitsOnly.Substring(2, 2));
                             if (minutes > 59)
                             {

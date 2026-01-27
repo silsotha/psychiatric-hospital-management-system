@@ -7,7 +7,7 @@
         ResizeMode="NoResize">
 
     <Window.Resources>
-        <!-- Стиль для текстбоксов -->
+        <!-- стиль для текстбоксов -->
         <Style TargetType="TextBox">
             <Setter Property="Padding" Value="8"/>
             <Setter Property="FontSize" Value="14"/>
@@ -15,7 +15,7 @@
             <Setter Property="Margin" Value="0,5,0,5"/>
         </Style>
 
-        <!-- Стиль для PasswordBox -->
+        <!-- стиль для PasswordBox -->
         <Style TargetType="PasswordBox">
             <Setter Property="Padding" Value="8"/>
             <Setter Property="FontSize" Value="14"/>
@@ -23,7 +23,7 @@
             <Setter Property="Margin" Value="0,5,0,5"/>
         </Style>
 
-        <!-- Стиль для кнопок -->
+        <!-- стиль для кнопок -->
         <Style TargetType="Button">
             <Setter Property="Padding" Value="15,8"/>
             <Setter Property="FontSize" Value="14"/>
@@ -32,7 +32,7 @@
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
 
-        <!-- Стиль для заголовков -->
+        <!-- стиль для заголовков -->
         <Style TargetType="Label">
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Margin" Value="0,10,0,0"/>
@@ -45,7 +45,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Шапка -->
+        <!-- шапка -->
         <Border Grid.Row="0" Background="#2196F3" Padding="20">
             <StackPanel>
                 <TextBlock Text="ИС Психиатрической Больницы" 
@@ -62,30 +62,30 @@
             </StackPanel>
         </Border>
 
-        <!-- Форма входа -->
+        <!-- форма входа -->
         <StackPanel Grid.Row="1" 
                     Margin="40,30,40,30"
                     VerticalAlignment="Center">
 
-            <!-- Заголовок -->
+            <!-- заголовок -->
             <TextBlock Text="Вход в систему" 
                       FontSize="18" 
                       FontWeight="SemiBold"
                       HorizontalAlignment="Center"
                       Margin="0,0,0,20"/>
 
-            <!-- Имя пользователя -->
+            <!-- имя пользователя -->
             <Label Content="Имя пользователя:"/>
             <TextBox x:Name="txtUsername" 
                      TabIndex="0"/>
 
-            <!-- Пароль -->
+            <!-- пароль -->
             <Label Content="Пароль:"/>
             <PasswordBox x:Name="txtPassword" 
                         TabIndex="1"
                         KeyDown="TxtPassword_KeyDown"/>
 
-            <!-- Сообщение об ошибке -->
+            <!-- сообщение об ошибке -->
             <TextBlock x:Name="lblError" 
                       Text=""
                       Foreground="Red"
@@ -94,7 +94,7 @@
                       TextWrapping="Wrap"
                       Visibility="Collapsed"/>
 
-            <!-- Кнопки -->
+            <!-- кнопки -->
             <Grid Margin="0,25,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -118,7 +118,7 @@
                        TabIndex="3"/>
             </Grid>
 
-            <!-- Информация -->
+            <!-- информация -->
             <TextBlock Text="Для тестирования: dr_ivanov / password123" 
                       FontSize="10"
                       Foreground="Gray"

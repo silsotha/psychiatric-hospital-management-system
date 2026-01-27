@@ -47,7 +47,7 @@ namespace PsychiatricHospitalWPF.Views.Prescriptions
 
         private void TxtDuration_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            // только цифры
+            // иолько цифры
             e.Handled = !char.IsDigit(e.Text, 0);
         }
 
