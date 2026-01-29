@@ -147,7 +147,6 @@ namespace PsychiatricHospitalWPF.Services
             return patients;
         }
 
-
         // расширенный поиск пациентов по критериям
         public List<Patient> AdvancedSearch(string fullName = null,
                                             string cardNumber = null,
@@ -356,8 +355,7 @@ namespace PsychiatricHospitalWPF.Services
                 throw new Exception(string.Format("Ошибка при обновлении пациента: {0}", ex.Message), ex);
             }
         }
-
-
+        
         // выписка пациента
         public void DischargePatient(int patientId, DateTime dischargeDate,
                                      string reason, string finalDiagnosis)

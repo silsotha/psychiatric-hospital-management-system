@@ -63,7 +63,7 @@ namespace PsychiatricHospitalWPF.Models
             set { patientName = value; OnPropertyChanged(nameof(PatientName)); }
         }
 
-        // иип записи
+        // тип записи
         public string RecordType
         {
             get { return recordType; }

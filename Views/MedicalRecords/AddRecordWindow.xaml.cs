@@ -30,15 +30,15 @@ namespace PsychiatricHospitalWPF.Views.MedicalRecords
             // установка текущей даты и времени
             dpRecordDate.SelectedDate = DateTime.Now;
             dpRecordDate.DisplayDateEnd = DateTime.Now;
-            txtRecordTime.Text = DateTime.Now.ToString("HH:mm");
+            txtExecutionTime.Text = DateTime.Now.ToString("HH:mm");
 
-            // подписываемся на события для валидации времени
-            txtRecordTime.PreviewTextInput += TxtRecordTime_PreviewTextInput;
-            txtRecordTime.PreviewKeyDown += TxtRecordTime_PreviewKeyDown;
+            // подписка на события для валидации времени
+            txtExecutionTime.PreviewTextInput += txtExecutionTime_PreviewTextInput;
+            txtExecutionTime.PreviewKeyDown += txtExecutionTime_PreviewKeyDown;
         }
 
         // валидация ввода времени - только цифры
-        private void TxtRecordTime_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void txtExecutionTime_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             // разрешаем только цифры
             if (!char.IsDigit(e.Text, 0))
@@ -48,7 +48,7 @@ namespace PsychiatricHospitalWPF.Views.MedicalRecords
         }
 
         // специальные клавиши
-        private void TxtRecordTime_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void txtExecutionTime_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             // навигационные можно
             if (e.Key == Key.Back || e.Key == Key.Delete ||
@@ -60,13 +60,13 @@ namespace PsychiatricHospitalWPF.Views.MedicalRecords
         }
 
         // валидация времени с обработкой курсора
-        private void TxtRecordTime_TextChanged(object sender, TextChangedEventArgs e)
+        private void txtExecutionTime_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (isTimeUpdating)
                 return;
 
-            string currentText = txtRecordTime.Text;
-            int currentCaretIndex = txtRecordTime.CaretIndex;
+            string currentText = txtExecutionTime.Text;
+            int currentCaretIndex = txtExecutionTime.CaretIndex;
 
             // убираем все нецифровые символы
             string digitsOnly = "";
@@ -138,7 +138,7 @@ namespace PsychiatricHospitalWPF.Views.MedicalRecords
             {
                 isTimeUpdating = true;
 
-                txtRecordTime.Text = newText;
+                txtExecutionTime.Text = newText;
 
                 // обработка позиции курсора
                 int newCaretIndex = currentCaretIndex;
@@ -159,13 +159,13 @@ namespace PsychiatricHospitalWPF.Views.MedicalRecords
                     newCaretIndex = currentCaretIndex;
                 }
 
-                // курсор в допустимых пределах?!
+                // курсор в допустимых пределах?
                 if (newCaretIndex > newText.Length)
                     newCaretIndex = newText.Length;
                 else if (newCaretIndex < 0)
                     newCaretIndex = 0;
 
-                txtRecordTime.CaretIndex = newCaretIndex;
+                txtExecutionTime.CaretIndex = newCaretIndex;
                 isTimeUpdating = false;
             }
 
@@ -248,26 +248,26 @@ namespace PsychiatricHospitalWPF.Views.MedicalRecords
             }
 
             // валидация времени
-            if (string.IsNullOrWhiteSpace(txtRecordTime.Text))
+            if (string.IsNullOrWhiteSpace(txtExecutionTime.Text))
             {
                 ShowError("Введите время записи");
-                txtRecordTime.Focus();
+                txtExecutionTime.Focus();
                 return;
             }
 
             // проверка формата времени
-            if (txtRecordTime.Text.Length != 5 || !txtRecordTime.Text.Contains(":"))
+            if (txtExecutionTime.Text.Length != 5 || !txtExecutionTime.Text.Contains(":"))
             {
                 ShowError("Введите время полностью в формате ЧЧ:ММ (например, 14:30)");
-                txtRecordTime.Focus();
+                txtExecutionTime.Focus();
                 return;
             }
 
             TimeSpan recordTime;
-            if (!TimeSpan.TryParse(txtRecordTime.Text.Trim(), out recordTime))
+            if (!TimeSpan.TryParse(txtExecutionTime.Text.Trim(), out recordTime))
             {
                 ShowError("Неверный формат времени! Используйте формат ЧЧ:ММ (например, 14:30)");
-                txtRecordTime.Focus();
+                txtExecutionTime.Focus();
                 return;
             }
 

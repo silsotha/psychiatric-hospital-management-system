@@ -98,7 +98,7 @@
                            VerticalAlignment="Center"
                            MaxWidth="600">
 
-                    <Image Source="/Images/logo.png"
+                    <Image Source="/Resources/logo.png"
                     Width="80"
                     Height="80"
                     HorizontalAlignment="Center"

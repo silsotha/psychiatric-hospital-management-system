@@ -24,10 +24,151 @@ namespace PsychiatricHospitalWPF.Views.Prescriptions
             txtExecutionTime.Focus();
         }
 
-        // валидация времени (копируем логику из AddRecordWindow)
+        // валидация времени
         private void TxtExecutionTime_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            // ...копируем логику валидации времени из AddRecordWindow.xaml.cs...
+            if (isTimeUpdating)
+                return;
+
+            string currentText = txtExecutionTime.Text;
+            int currentCaretIndex = txtExecutionTime.CaretIndex;
+
+            // убираем все нецифровые символы
+            string digitsOnly = "";
+            foreach (char c in currentText)
+            {
+                if (char.IsDigit(c))
+                    digitsOnly += c;
+            }
+
+            if (string.IsNullOrEmpty(digitsOnly))
+            {
+                lblTimeHint.Text = "Введите время в формате ЧЧ:ММ (например, 14:30)";
+                lblTimeHint.Foreground = Brushes.Gray;
+                return;
+            }
+
+            // ограничиваем длину до 4 цифр
+            if (digitsOnly.Length > 4)
+            {
+                digitsOnly = digitsOnly.Substring(0, 4);
+            }
+
+            // формируем новый текст
+            string newText = "";
+            bool hasError = false;
+            string errorMessage = "";
+
+            if (digitsOnly.Length >= 1)
+            {
+                // проверяем первую цифру часов
+                int firstDigit = int.Parse(digitsOnly.Substring(0, 1));
+
+                if (digitsOnly.Length >= 2)
+                {
+                    // проверяем полные часы
+                    int hours = int.Parse(digitsOnly.Substring(0, 2));
+                    if (hours > 23)
+                    {
+                        hasError = true;
+                        errorMessage = "✗ Часы должны быть от 00 до 23";
+                    }
+
+                    newText = digitsOnly.Substring(0, 2) + ":";
+
+                    if (digitsOnly.Length >= 3)
+                    {
+                        newText += digitsOnly.Substring(2);
+
+                        if (digitsOnly.Length >= 4)
+                        {
+                            // проверяем минуты
+                            int minutes = int.Parse(digitsOnly.Substring(2, 2));
+                            if (minutes > 59)
+                            {
+                                hasError = true;
+                                errorMessage = "✗ Минуты должны быть от 00 до 59";
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    newText = digitsOnly;
+                }
+            }
+
+            // обновляем поле, если текст изменился
+            if (currentText != newText)
+            {
+                isTimeUpdating = true;
+
+                txtExecutionTime.Text = newText;
+
+                // обработка позиции курсора
+                int newCaretIndex = currentCaretIndex;
+
+                // если добавилось двоеточие и курсор был после второй цифры
+                if (newText.Length > currentText.Length && newText.Contains(":"))
+                {
+                    int colonIndex = newText.IndexOf(':');
+                    if (currentCaretIndex >= colonIndex)
+                    {
+                        newCaretIndex = currentCaretIndex + (newText.Length - currentText.Length);
+                    }
+                }
+
+                // если удаляем символы
+                if (newText.Length < currentText.Length)
+                {
+                    newCaretIndex = currentCaretIndex;
+                }
+
+                // курсор в допустимых пределах?
+                if (newCaretIndex > newText.Length)
+                    newCaretIndex = newText.Length;
+                else if (newCaretIndex < 0)
+                    newCaretIndex = 0;
+
+                txtExecutionTime.CaretIndex = newCaretIndex;
+                isTimeUpdating = false;
+            }
+
+            // обновляем подсказку
+            if (hasError)
+            {
+                lblTimeHint.Text = errorMessage;
+                lblTimeHint.Foreground = Brushes.Red;
+            }
+            else if (digitsOnly.Length == 4)
+            {
+                // проверяем полный формат
+                if (TimeSpan.TryParse(newText, out TimeSpan time))
+                {
+                    lblTimeHint.Text = "✓ Формат времени корректен";
+                    lblTimeHint.Foreground = Brushes.Green;
+                }
+                else
+                {
+                    lblTimeHint.Text = "✗ Неверное время!";
+                    lblTimeHint.Foreground = Brushes.Red;
+                }
+            }
+            else if (digitsOnly.Length >= 3)
+            {
+                lblTimeHint.Text = "Введите вторую цифру минут...";
+                lblTimeHint.Foreground = Brushes.Orange;
+            }
+            else if (digitsOnly.Length == 2)
+            {
+                lblTimeHint.Text = "Введите минуты (00-59)";
+                lblTimeHint.Foreground = Brushes.Gray;
+            }
+            else
+            {
+                lblTimeHint.Text = "Введите вторую цифру часов...";
+                lblTimeHint.Foreground = Brushes.Gray;
+            }
         }
 
         private void BtnExecute_Click(object sender, RoutedEventArgs e)

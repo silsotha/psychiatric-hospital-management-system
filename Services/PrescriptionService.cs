@@ -13,7 +13,7 @@ namespace PsychiatricHospitalWPF.Services
         // создать новое назначение
         public int CreatePrescription(Prescription prescription)
         {
-            // проверка прав (только врач)
+            // проверка прав
             if (!UserSession.CanEditMedicalRecords())
             {
                 throw new UnauthorizedAccessException(
@@ -561,7 +561,7 @@ namespace PsychiatricHospitalWPF.Services
             }
         }
 
-        // завершить назначение досрочно
+        // завершить назначение досрочно (если хотя бы раз отмечалось выполнение)
         public void CompletePrescription(int prescriptionId, string reason)
         {
             try

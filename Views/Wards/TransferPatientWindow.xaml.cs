@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Windows;
-using PsychiatricHospitalWPF.Models;
 using PsychiatricHospitalWPF.Services;
 using PsychiatricHospitalWPF.Utils;
 

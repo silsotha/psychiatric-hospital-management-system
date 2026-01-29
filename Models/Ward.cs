@@ -87,8 +87,6 @@ namespace PsychiatricHospitalWPF.Models
 
         public string OccupancyDisplay => string.Format("{0:F1}%", OccupancyRate);
 
-        // свойства для визуального отображения статуса
-
         /// <summary>
         /// цвет статуса в виде строки (для XAML Binding)
         /// </summary>

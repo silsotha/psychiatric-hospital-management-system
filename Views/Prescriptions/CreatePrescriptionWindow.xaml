@@ -122,28 +122,6 @@
                           Foreground="Gray"
                           Margin="5,0,0,15"/>
 
-                <!-- информационная панель -->
-                <Border Background="#E8F5E9" 
-                       BorderBrush="#4CAF50" 
-                       BorderThickness="1"
-                       Padding="10"
-                       Margin="0,5,0,0">
-                    <StackPanel>
-                        <TextBlock Text="ℹ️ Информация:" 
-                                  FontWeight="SemiBold"
-                                  Foreground="#2E7D32"/>
-                        <TextBlock Margin="15,5,0,0" TextWrapping="Wrap">
-                            <Run Text="• Поля с * обязательны для заполнения"/>
-                        </TextBlock>
-                        <TextBlock Margin="15,2,0,0" TextWrapping="Wrap">
-                            <Run Text="• Дата окончания рассчитывается автоматически"/>
-                        </TextBlock>
-                        <TextBlock Margin="15,2,0,0" TextWrapping="Wrap">
-                            <Run Text="• Статус назначения будет: Активно"/>
-                        </TextBlock>
-                    </StackPanel>
-                </Border>
-
             </StackPanel>
         </ScrollViewer>
 

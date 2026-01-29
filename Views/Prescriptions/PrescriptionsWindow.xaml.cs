@@ -49,6 +49,7 @@ namespace PsychiatricHospitalWPF.Views.Prescriptions
 
             }
         }
+
         private void LoadPatientInfo()
         {
             try
@@ -290,7 +291,7 @@ namespace PsychiatricHospitalWPF.Views.Prescriptions
             if (prescription == null)
                 return;
 
-            // проверяем права (только создавший врач)
+            // проверка прав
             if (prescription.DoctorId != UserSession.CurrentUser.UserId)
             {
                 MessageBox.Show(

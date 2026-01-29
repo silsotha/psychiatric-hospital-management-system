@@ -1,5 +1,4 @@
-﻿using PsychiatricHospitalWPF.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Media;
@@ -161,7 +160,7 @@ namespace PsychiatricHospitalWPF.Models
 
                     var diff = Math.Abs((scheduledTime - now).TotalMinutes);
 
-                    // если это время ещё не прошло больше чем на 4 часа
+                    // если это время ещё не прошло больше чем на 4 часа, будет отмечено просроченным
                     if ((scheduledTime - now).TotalHours > -4)
                     {
                         if (diff < closestDiff)

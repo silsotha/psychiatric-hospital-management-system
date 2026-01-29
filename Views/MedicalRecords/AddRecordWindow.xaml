@@ -44,11 +44,11 @@
 
                 <!-- время -->
                 <Label Content="Время (HH:mm):" FontWeight="SemiBold"/>
-                <TextBox x:Name="txtRecordTime" 
+                <TextBox x:Name="txtExecutionTime" 
                         Padding="10" 
                         Height="35"
                         Margin="0,0,0,5"
-                        TextChanged="TxtRecordTime_TextChanged"/>
+                        TextChanged="txtExecutionTime_TextChanged"/>
                 <TextBlock x:Name="lblTimeHint" 
                           Text="Например: 14:30"
                           FontSize="11"

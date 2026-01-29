@@ -3,7 +3,6 @@ using PsychiatricHospitalWPF.Views.Auth;
 using PsychiatricHospitalWPF.Views.Patients;
 using PsychiatricHospitalWPF.Views.Reports;
 using PsychiatricHospitalWPF.Views.Wards;
-using System;
 using System.Windows;
 
 namespace PsychiatricHospitalWPF

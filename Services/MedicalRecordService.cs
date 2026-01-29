@@ -143,7 +143,6 @@ namespace PsychiatricHospitalWPF.Services
             return null;
         }
 
-
         // поиск записей по описанию
         public List<MedicalRecord> SearchRecords(int patientId, string searchTerm)
         {
