@@ -6,8 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace PsychiatricHospitalWPF.Views.Prescriptions
 {
@@ -18,6 +17,7 @@ namespace PsychiatricHospitalWPF.Views.Prescriptions
         private readonly int patientId;
         private readonly string patientName;
         private List<Prescription> allPrescriptions;
+        private DispatcherTimer refreshTimer;
 
         public PrescriptionsWindow(int patientId, string patientName)
         {
@@ -29,16 +29,26 @@ namespace PsychiatricHospitalWPF.Views.Prescriptions
             prescriptionService = new PrescriptionService();
             patientService = new PatientService();
 
+            this.DataContext = this;
+
+            // настройка таймера для обновления индикаторов
+            refreshTimer = new DispatcherTimer();
+            refreshTimer.Interval = TimeSpan.FromMinutes(1);
+            refreshTimer.Tick += (s, e) => RefreshPrescriptionStatuses();
+            refreshTimer.Start();
+
             LoadPatientInfo();
             LoadPrescriptions();
 
-            // скрыть кнопку добавления для медсестер
+            // настройка UI для медсестёр
             if (UserSession.CurrentUser.Role == "nurse")
             {
                 btnAddPrescription.Visibility = Visibility.Collapsed;
+                cmbStatusFilter.Visibility = Visibility.Collapsed;
+                cmbStatusFilter.SelectedIndex = 1; // активные
+
             }
         }
-
         private void LoadPatientInfo()
         {
             try
@@ -67,7 +77,14 @@ namespace PsychiatricHospitalWPF.Views.Prescriptions
         {
             try
             {
-                allPrescriptions = prescriptionService.GetPrescriptionsByPatient(patientId);
+                // для медсестёр загружаем ТОЛЬКО активные назначения
+                bool loadActiveOnly = (UserSession.CurrentUser.Role == "nurse");
+
+                allPrescriptions = prescriptionService.GetPrescriptionsByPatient(
+                    patientId,
+                    activeOnly: loadActiveOnly
+                );
+
                 ApplyFilter();
             }
             catch (Exception ex)
@@ -81,91 +98,6 @@ namespace PsychiatricHospitalWPF.Views.Prescriptions
                 allPrescriptions = new List<Prescription>();
                 dgPrescriptions.ItemsSource = allPrescriptions;
             }
-        }
-
-
-        // обработчик загрузки строки - скрываем кнопки для неактивных назначений
-        private void DgPrescriptions_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            var prescription = e.Row.Item as Prescription;
-            if (prescription == null)
-                return;
-
-            // ищем кнопки в строке
-            var presenter = GetVisualChild<DataGridCellsPresenter>(e.Row);
-            if (presenter == null)
-            {
-                e.Row.Loaded += (s, args) => HideButtonsForInactiveRow(e.Row);
-                return;
-            }
-
-            HideButtonsForInactiveRow(e.Row);
-        }
-
-        // скрываем кнопки для неактивных назначений
-        private void HideButtonsForInactiveRow(DataGridRow row)
-        {
-            var prescription = row.Item as Prescription;
-            if (prescription == null || prescription.Status == "Активно")
-                return;
-
-            // ищем StackPanel с кнопками
-            var presenter = GetVisualChild<DataGridCellsPresenter>(row);
-            if (presenter == null)
-                return;
-
-            // перебираем ячейки
-            for (int i = 0; i < dgPrescriptions.Columns.Count; i++)
-            {
-                var cell = presenter.ItemContainerGenerator.ContainerFromIndex(i) as DataGridCell;
-                if (cell == null)
-                    continue;
-
-                var stackPanel = FindVisualChild<StackPanel>(cell);
-                if (stackPanel != null)
-                {
-                    // скрываем весь StackPanel с кнопками
-                    stackPanel.Visibility = Visibility.Collapsed;
-                    break;
-                }
-            }
-        }
-
-        // вспомогательный метод для поиска визуального потомка
-        private T GetVisualChild<T>(DependencyObject parent) where T : Visual
-        {
-            T child = default(T);
-            int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < numVisuals; i++)
-            {
-                Visual v = (Visual)VisualTreeHelper.GetChild(parent, i);
-                child = v as T;
-                if (child == null)
-                {
-                    child = GetVisualChild<T>(v);
-                }
-                if (child != null)
-                {
-                    break;
-                }
-            }
-            return child;
-        }
-
-        // вспомогательный метод для поиска потомка по типу
-        private T FindVisualChild<T>(DependencyObject obj) where T : DependencyObject
-        {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
-                if (child != null && child is T)
-                    return (T)child;
-
-                T childOfChild = FindVisualChild<T>(child);
-                if (childOfChild != null)
-                    return childOfChild;
-            }
-            return null;
         }
 
         private void ApplyFilter()
@@ -193,6 +125,28 @@ namespace PsychiatricHospitalWPF.Views.Prescriptions
 
             // обновляем заголовок с количеством
             this.Title = string.Format("Назначения пациента ({0} шт.)", filtered.Count);
+        }
+
+        private void RefreshPrescriptionStatuses()
+        {
+            // обновляем визуальное отображение
+            if (dgPrescriptions.ItemsSource != null)
+            {
+                var currentSource = dgPrescriptions.ItemsSource;
+                dgPrescriptions.ItemsSource = null;
+                dgPrescriptions.ItemsSource = currentSource;
+            }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            // останавливаем таймер при закрытии окна
+            if (refreshTimer != null)
+            {
+                refreshTimer.Stop();
+                refreshTimer = null;
+            }
+            base.OnClosed(e);
         }
 
         private void BtnAddPrescription_Click(object sender, RoutedEventArgs e)
@@ -254,11 +208,15 @@ namespace PsychiatricHospitalWPF.Views.Prescriptions
                 txtDetailNotes.Visibility = Visibility.Collapsed;
             }
 
-            // если отменено, показываем причину
-            if (prescription.Status == "Отменено" && !string.IsNullOrEmpty(prescription.CancelReason))
+            // показываем информацию об отмене
+            if (prescription.Status == "Отменено")
             {
-                txtDetailNotes.Text = string.Format("Причина отмены: {0}", prescription.CancelReason);
-                txtDetailNotes.Visibility = Visibility.Visible;
+                txtCancelInfo.Text = prescription.CancelInfo;
+                pnlCancelInfo.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                pnlCancelInfo.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -276,65 +234,38 @@ namespace PsychiatricHospitalWPF.Views.Prescriptions
 
             int prescriptionId = (int)button.Tag;
 
-            // получаем информацию о назначении
             var prescription = allPrescriptions.FirstOrDefault(p => p.PrescriptionId == prescriptionId);
             if (prescription == null)
                 return;
 
-            // подтверждение выполнения
-            var result = MessageBox.Show(
-                string.Format(
-                    "Отметить выполнение назначения?\n\n" +
-                    "{0} {1}\n" +
-                    "Периодичность: {2}\n\n" +
-                    "Текущее время: {3:HH:mm}",
-                    prescription.TypeIcon,
-                    prescription.FullName,
-                    prescription.Frequency,
-                    DateTime.Now),
-                "Подтверждение",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (result != MessageBoxResult.Yes)
+            // открываем окно выбора времени
+            var executeWindow = new ExecutePrescriptionWindow(prescription.FullName);
+            if (executeWindow.ShowDialog() != true)
                 return;
 
             try
             {
-                // отмечаем выполнение
-                prescriptionService.ExecutePrescription(prescriptionId);
+                // используем выбранные дату/время и примечания
+                prescriptionService.ExecutePrescription(
+                    prescriptionId,
+                    executeWindow.ExecutionDateTime,
+                    executeWindow.Notes
+                );
 
                 MessageBox.Show(
                     string.Format(
                         "Выполнение отмечено!\n\n" +
                         "Назначение: {0}\n" +
                         "Время: {1:dd.MM.yyyy HH:mm}\n" +
-                        "Медсестра/Врач: {2}",
+                        "Исполнитель: {2}",
                         prescription.Name,
-                        DateTime.Now,
+                        executeWindow.ExecutionDateTime,
                         UserSession.CurrentUser.FullName),
                     "Успех",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
 
-                // обновляем список
                 LoadPrescriptions();
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                MessageBox.Show(
-                    ex.Message,
-                    "Доступ запрещен",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
-            }
-            catch (InvalidOperationException ex)
-            {
-                MessageBox.Show(
-                    ex.Message,
-                    "Ошибка",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
             }
             catch (Exception ex)
             {

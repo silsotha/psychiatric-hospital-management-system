@@ -86,7 +86,7 @@ namespace PsychiatricHospitalWPF.Services
 
                         int recordId = (int)cmd.ExecuteScalar();
 
-                        // Логируем действие
+                        // логируем действие
                         authService.AddAuditLog(
                             UserSession.CurrentUser.UserId,
                             "ADD_MEDICAL_RECORD",

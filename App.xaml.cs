@@ -7,7 +7,7 @@ namespace PsychiatricHospitalWPF
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            // сначала показываем окно входа!
+            // сначала показываем окно входа
             var loginWindow = new LoginWindow();
             loginWindow.Show();
         }

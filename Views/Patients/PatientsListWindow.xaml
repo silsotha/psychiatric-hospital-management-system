@@ -280,6 +280,5 @@
                           HorizontalAlignment="Right"/>
             </Grid>
         </Border>
-
     </Grid>
 </Window>

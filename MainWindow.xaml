@@ -28,7 +28,7 @@
                           VerticalAlignment="Center"/>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <!-- дОБАВЛЕНО: Информация о пользователе -->
+                    <!-- информация о пользователе -->
                     <TextBlock x:Name="lblUserInfo"
                               Text="Пользователь"
                               Foreground="White"

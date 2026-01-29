@@ -89,7 +89,7 @@ namespace PsychiatricHospitalWPF.Services
             return null;
         }
 
-        // поиск пациентов по ФИО или номеру карты (обновленная версия)
+        // поиск пациентов по ФИО или номеру карты
         public List<Patient> SearchPatients(string searchTerm)
         {
             var patients = new List<Patient>();
@@ -148,7 +148,7 @@ namespace PsychiatricHospitalWPF.Services
         }
 
 
-        /// расширенный поиск пациентов по критериям
+        // расширенный поиск пациентов по критериям
         public List<Patient> AdvancedSearch(string fullName = null,
                                             string cardNumber = null,
                                             string wardNumber = null,
