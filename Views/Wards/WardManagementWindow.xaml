@@ -222,7 +222,7 @@
             <Grid>
                 <!-- легенда цветов -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                    <TextBlock Text="Легенда:" 
+                    <TextBlock Text="📊 Легенда заполненности палат:" 
                               FontWeight="SemiBold" 
                               Margin="0,0,10,0"
                               VerticalAlignment="Center"/>

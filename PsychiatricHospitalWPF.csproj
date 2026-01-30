@@ -79,6 +79,7 @@
     <Compile Include="Services\AuthService.cs" />
     <Compile Include="Services\MedicalRecordService.cs" />
     <Compile Include="Services\PatientService.cs" />
+    <Compile Include="Services\PdfReportService.cs" />
     <Compile Include="Services\PrescriptionService.cs" />
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Services\WardService.cs" />

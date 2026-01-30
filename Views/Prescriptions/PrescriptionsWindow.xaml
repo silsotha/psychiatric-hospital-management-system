@@ -153,46 +153,49 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="✓ Выполнено" 
-                                       Tag="{Binding PrescriptionId}"
-                                       Click="BtnExecute_Click"
-                                       Background="#2196F3"
-                                       Foreground="White"
-                                       Padding="8,4"
-                                       Margin="2"
-                                       Cursor="Hand">
-                                    <Button.Style>
-                                        <Style TargetType="Button">
-                                            <Setter Property="IsEnabled" Value="True"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Status}" Value="Завершено">
-                                                    <Setter Property="IsEnabled" Value="False"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Status}" Value="Отменено">
-                                                    <Setter Property="IsEnabled" Value="False"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
+                                <!-- кнопки автоматически скрываются для неактивных -->
+                                <StackPanel.Style>
+                                    <Style TargetType="StackPanel">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Status}" Value="Завершено">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Status}" Value="Отменено">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
 
-                                <Button Content="❌ Отменить" 
-                                       Tag="{Binding PrescriptionId}"
-                                       Click="BtnCancel_Click"
-                                       Background="#f44336"
-                                       Foreground="White"
-                                       Padding="8,4"
-                                       Margin="2"
-                                       Cursor="Hand">
+                                <!-- кнопка "Выполнено" - видна всем -->
+                                <Button Content="✓ Выполнено" 
+                                   Tag="{Binding PrescriptionId}"
+                                   Click="BtnExecute_Click"
+                                   Background="#2196F3"
+                                   Foreground="White"
+                                   Padding="8,4"
+                                   Margin="2"
+                                   Cursor="Hand"/>
+
+                                <!-- кнопка "Отменить" - только для врачей -->
+                                <Button x:Name="btnCancel"
+                                   Content="❌ Отменить" 
+                                   Tag="{Binding PrescriptionId}"
+                                   Click="BtnCancel_Click"
+                                   Background="#f44336"
+                                   Foreground="White"
+                                   Padding="8,4"
+                                   Margin="2"
+                                   Cursor="Hand">
+                                    <!-- скрываем для медсестёр -->
                                     <Button.Style>
                                         <Style TargetType="Button">
-                                            <Setter Property="IsEnabled" Value="True"/>
+                                            <Setter Property="Visibility" Value="Visible"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Status}" Value="Завершено">
-                                                    <Setter Property="IsEnabled" Value="False"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Status}" Value="Отменено">
-                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Window}, 
+                                                              Path=DataContext.IsNurse}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -204,7 +207,7 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        
+
         <!-- детали назначения -->
         <Border Grid.Row="3"
         Background="#f9f9f9"
@@ -213,7 +216,43 @@
         BorderThickness="0,1,0,0">
 
             <Grid>
-                <StackPanel x:Name="panelDetails" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- легенда цветовых индикаторов -->
+                <StackPanel Grid.Row="0" 
+                           Orientation="Horizontal" 
+                           Margin="0,0,0,15"
+                           HorizontalAlignment="Left">
+                    <TextBlock Text="📊 Легенда статусов выполнения:" 
+                              FontWeight="SemiBold" 
+                              Margin="0,0,15,0"
+                              VerticalAlignment="Center"/>
+
+                    <!-- зелёный: выполнено -->
+                    <Ellipse Width="16" Height="16" Fill="#4CAF50" Margin="5,0"/>
+                    <TextBlock Text="Выполнено" Margin="0,0,15,0" VerticalAlignment="Center"/>
+
+                    <!-- жёлтый: приближается -->
+                    <Ellipse Width="16" Height="16" Fill="#FFC107" Margin="5,0"/>
+                    <TextBlock Text="Приближается (&lt;30 мин)" Margin="0,0,15,0" VerticalAlignment="Center"/>
+
+                    <!-- оранжевый: небольшая задержка -->
+                    <Ellipse Width="16" Height="16" Fill="#FF9800" Margin="5,0"/>
+                    <TextBlock Text="Задержка (&lt;1 ч)" Margin="0,0,15,0" VerticalAlignment="Center"/>
+
+                    <!-- красный: просрочено -->
+                    <Ellipse Width="16" Height="16" Fill="#f44336" Margin="5,0"/>
+                    <TextBlock Text="Просрочено (&gt;1 ч)" Margin="0,0,15,0" VerticalAlignment="Center"/>
+
+                    <!-- серый: завершено/по необходимости -->
+                    <Ellipse Width="16" Height="16" Fill="#9E9E9E" Margin="5,0"/>
+                    <TextBlock Text="Завершено/По необходимости" Margin="0,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel x:Name="panelDetails" Grid.Row="1" Visibility="Collapsed">
                     <Border x:Name="pnlCancelInfo"
                             Background="#FFEBEE"
                             BorderBrush="#f44336"
@@ -229,7 +268,7 @@
                             FontWeight="SemiBold"/>
                         </StackPanel>
                     </Border>
-                    
+
                     <TextBlock Text="Детали назначения" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,10"/>
 
                     <Grid>
@@ -260,6 +299,7 @@
 
                 <!-- сообщение, если ничего не выбрано -->
                 <TextBlock x:Name="txtNoSelection"
+                   Grid.Row="1"
                    Text="Выберите назначение для просмотра деталей"
                    Foreground="Gray"
                    FontStyle="Italic"

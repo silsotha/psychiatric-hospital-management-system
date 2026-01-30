@@ -19,12 +19,18 @@ namespace PsychiatricHospitalWPF.Views.Prescriptions
         private List<Prescription> allPrescriptions;
         private DispatcherTimer refreshTimer;
 
+        public bool IsNurse
+        {
+            get { return UserSession.CurrentUser.Role == "nurse"; }
+        }
+
         public PrescriptionsWindow(int patientId, string patientName)
         {
             InitializeComponent();
 
             this.patientId = patientId;
             this.patientName = patientName;
+            this.prescriptionService = new PrescriptionService();
 
             prescriptionService = new PrescriptionService();
             patientService = new PatientService();
@@ -39,15 +45,7 @@ namespace PsychiatricHospitalWPF.Views.Prescriptions
 
             LoadPatientInfo();
             LoadPrescriptions();
-
-            // настройка UI для медсестёр
-            if (UserSession.CurrentUser.Role == "nurse")
-            {
-                btnAddPrescription.Visibility = Visibility.Collapsed;
-                cmbStatusFilter.Visibility = Visibility.Collapsed;
-                cmbStatusFilter.SelectedIndex = 1; // активные
-
-            }
+            ConfigureUIForRole();
         }
 
         private void LoadPatientInfo()
@@ -98,6 +96,22 @@ namespace PsychiatricHospitalWPF.Views.Prescriptions
 
                 allPrescriptions = new List<Prescription>();
                 dgPrescriptions.ItemsSource = allPrescriptions;
+            }
+        }
+
+        private void ConfigureUIForRole()
+        {
+            // если медсестра, скрываем кнопку создания и фильтр статуса
+            if (UserSession.CurrentUser.Role == "nurse")
+            {
+                btnAddPrescription.Visibility = Visibility.Collapsed;
+
+                // скрываем фильтр статуса и принудительно показываем только активные
+                if (cmbStatusFilter != null)
+                {
+                    cmbStatusFilter.Visibility = Visibility.Collapsed;
+                    cmbStatusFilter.SelectedIndex = 1; // активно
+                }
             }
         }
 

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Media;
 using PsychiatricHospitalWPF.Services;
 
 namespace PsychiatricHospitalWPF.Views.Reports
@@ -11,12 +10,14 @@ namespace PsychiatricHospitalWPF.Views.Reports
     public partial class ReportsWindow : Window
     {
         private readonly ReportService reportService;
+        private readonly PdfReportService pdfReportService;
 
         public ReportsWindow()
         {
             InitializeComponent();
 
             reportService = new ReportService();
+            pdfReportService = new PdfReportService();
 
             LoadHospitalStatistics();
             LoadCurrentPatientsReport();
@@ -153,6 +154,8 @@ namespace PsychiatricHospitalWPF.Views.Reports
                     periodInfo = string.Format(" с {0:dd.MM.yyyy}", dateFrom.Value);
                 else if (dateTo.HasValue)
                     periodInfo = string.Format(" по {0:dd.MM.yyyy}", dateTo.Value);
+                else
+                    periodInfo = " за всё время";
 
                 lblStatus.Text = string.Format(
                     "Диагнозов: {0}{1}. Отчёт сформирован: {2:dd.MM.yyyy HH:mm}",
@@ -175,254 +178,79 @@ namespace PsychiatricHospitalWPF.Views.Reports
             LoadDiagnosisStatistics(dpDiagFrom.SelectedDate, dpDiagTo.SelectedDate);
         }
 
+        private void BtnResetDiagFilter_Click(object sender, RoutedEventArgs e)
+        {
+            // сбрасываем выбранные даты
+            dpDiagFrom.SelectedDate = null;
+            dpDiagTo.SelectedDate = null;
+
+            // загружаем статистику за всё время
+            LoadDiagnosisStatistics(null, null);
+        }
+
         private void BtnPrint_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                FlowDocument document = null;
+                string pdfPath = null;
+
+                // показываем индикатор загрузки
+                btnPrint.IsEnabled = false;
+                lblStatus.Text = "Генерация PDF...";
 
                 switch (cmbReportType.SelectedIndex)
                 {
-                    case 0:
-                        document = CreateCurrentPatientsDocument();
+                    case 0: // текущие пациенты
+                        pdfPath = pdfReportService.GenerateCurrentPatientsReport();
                         break;
-                    case 1:
-                        document = CreateWardOccupancyDocument();
+
+                    case 1: // загрузка палат
+                        pdfPath = pdfReportService.GenerateWardOccupancyReport();
                         break;
-                    case 2:
-                        document = CreateDiagnosisStatisticsDocument();
+
+                    case 2: // статистика по диагнозам
+                        pdfPath = pdfReportService.GenerateDiagnosisStatisticsReport(
+                            dpDiagFrom.SelectedDate,
+                            dpDiagTo.SelectedDate);
                         break;
                 }
 
-                if (document == null)
-                    return;
-
-                var printDialog = new PrintDialog();
-                if (printDialog.ShowDialog() == true)
+                if (pdfPath != null)
                 {
-                    printDialog.PrintDocument(
-                        ((IDocumentPaginatorSource)document).DocumentPaginator,
-                        "Отчёт больницы");
-
-                    MessageBox.Show(
-                        "Документ отправлен на печать!\n\n" +
-                        "Если у вас установлен виртуальный принтер PDF\n" +
-                        "(Microsoft Print to PDF), выберите его для сохранения.",
-                        "Печать",
-                        MessageBoxButton.OK,
+                    // спрашиваем, хочет ли пользователь открыть файл
+                    var result = MessageBox.Show(
+                        string.Format("PDF-отчёт успешно создан!\n\nФайл сохранён:\n{0}\n\nОткрыть файл?", pdfPath),
+                        "Успех",
+                        MessageBoxButton.YesNo,
                         MessageBoxImage.Information);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        // открываем PDF в программе по умолчанию
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = pdfPath,
+                            UseShellExecute = true
+                        });
+                    }
+
+                    lblStatus.Text = string.Format("PDF создан: {0}", System.IO.Path.GetFileName(pdfPath));
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    string.Format("Ошибка печати:\n{0}", ex.Message),
+                    string.Format("Ошибка создания PDF:\n{0}", ex.Message),
                     "Ошибка",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
+
+                lblStatus.Text = "Ошибка создания PDF";
             }
-        }
-
-        private FlowDocument CreateCurrentPatientsDocument()
-        {
-            var doc = new FlowDocument
+            finally
             {
-                PagePadding = new Thickness(50),
-                FontFamily = new FontFamily("Segoe UI")
-            };
-
-            // заголовок
-            doc.Blocks.Add(new Paragraph(new Run("ОТЧЁТ О ТЕКУЩИХ ПАЦИЕНТАХ"))
-            {
-                FontSize = 18,
-                FontWeight = FontWeights.Bold,
-                TextAlignment = TextAlignment.Center,
-                Margin = new Thickness(0, 0, 0, 20)
-            });
-
-            // дата формирования
-            doc.Blocks.Add(new Paragraph(
-                new Run(string.Format("Дата формирования: {0:dd.MM.yyyy HH:mm}",
-                DateTime.Now)))
-            {
-                FontSize = 10,
-                Foreground = Brushes.Gray,
-                Margin = new Thickness(0, 0, 0, 20)
-            });
-
-            // статистика
-            var stats = reportService.GetHospitalStatistics();
-            doc.Blocks.Add(new Paragraph(
-                new Run(string.Format("Текущих пациентов: {0}", stats.CurrentPatients)))
-            {
-                FontSize = 12,
-                FontWeight = FontWeights.SemiBold,
-                Margin = new Thickness(0, 0, 0, 15)
-            });
-
-            // таблица
-            var patients = dgCurrentPatients.ItemsSource as List<CurrentPatientReport>;
-            if (patients != null && patients.Count > 0)
-            {
-                var table = new Table();
-                table.Columns.Add(new TableColumn { Width = new GridLength(100) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(150) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(50) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(150) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(80) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(70) });
-
-                var rowGroup = new TableRowGroup();
-
-                // заголовки
-                var headerRow = new TableRow();
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("№ Карты")) { FontWeight = FontWeights.Bold }));
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("ФИО")) { FontWeight = FontWeights.Bold }));
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Возр.")) { FontWeight = FontWeights.Bold }));
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Диагноз")) { FontWeight = FontWeights.Bold }));
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Поступил")) { FontWeight = FontWeights.Bold }));
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Дней")) { FontWeight = FontWeights.Bold }));
-                rowGroup.Rows.Add(headerRow);
-
-                // данные
-                foreach (var patient in patients)
-                {
-                    var row = new TableRow();
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(patient.CardNumber))));
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(patient.FullName))));
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(patient.Age.ToString()))));
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(patient.Diagnosis))));
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(patient.AdmissionDateDisplay))));
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(patient.DaysInHospital.ToString()))));
-                    rowGroup.Rows.Add(row);
-                }
-
-                table.RowGroups.Add(rowGroup);
-                doc.Blocks.Add(table);
+                btnPrint.IsEnabled = true;
             }
-
-            return doc;
-        }
-
-        private FlowDocument CreateWardOccupancyDocument()
-        {
-            var doc = new FlowDocument
-            {
-                PagePadding = new Thickness(50),
-                FontFamily = new FontFamily("Segoe UI")
-            };
-
-            doc.Blocks.Add(new Paragraph(new Run("ОТЧЁТ О ЗАГРУЗКЕ ПАЛАТ"))
-            {
-                FontSize = 18,
-                FontWeight = FontWeights.Bold,
-                TextAlignment = TextAlignment.Center,
-                Margin = new Thickness(0, 0, 0, 20)
-            });
-
-            doc.Blocks.Add(new Paragraph(
-                new Run(string.Format("Дата формирования: {0:dd.MM.yyyy HH:mm}", DateTime.Now)))
-            {
-                FontSize = 10,
-                Foreground = Brushes.Gray,
-                Margin = new Thickness(0, 0, 0, 20)
-            });
-
-            var wards = dgWardOccupancy.ItemsSource as List<WardOccupancyReport>;
-            if (wards != null && wards.Count > 0)
-            {
-                var table = new Table();
-                table.Columns.Add(new TableColumn { Width = new GridLength(150) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(80) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(80) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(80) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(80) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(80) });
-
-                var rowGroup = new TableRowGroup();
-
-                var headerRow = new TableRow();
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Отделение")) { FontWeight = FontWeights.Bold }));
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Палата")) { FontWeight = FontWeights.Bold }));
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Всего")) { FontWeight = FontWeights.Bold }));
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Занято")) { FontWeight = FontWeights.Bold }));
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Свободно")) { FontWeight = FontWeights.Bold }));
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Загрузка")) { FontWeight = FontWeights.Bold }));
-                rowGroup.Rows.Add(headerRow);
-
-                foreach (var ward in wards)
-                {
-                    var row = new TableRow();
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(ward.Department))));
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(ward.WardNumber))));
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(ward.TotalBeds.ToString()))));
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(ward.OccupiedBeds.ToString()))));
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(ward.AvailableBeds.ToString()))));
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(ward.OccupancyDisplay))));
-                    rowGroup.Rows.Add(row);
-                }
-
-                table.RowGroups.Add(rowGroup);
-                doc.Blocks.Add(table);
-            }
-
-            return doc;
-        }
-
-        private FlowDocument CreateDiagnosisStatisticsDocument()
-        {
-            var doc = new FlowDocument
-            {
-                PagePadding = new Thickness(50),
-                FontFamily = new FontFamily("Segoe UI")
-            };
-
-            doc.Blocks.Add(new Paragraph(new Run("СТАТИСТИКА ПО ДИАГНОЗАМ"))
-            {
-                FontSize = 18,
-                FontWeight = FontWeights.Bold,
-                TextAlignment = TextAlignment.Center,
-                Margin = new Thickness(0, 0, 0, 20)
-            });
-
-            doc.Blocks.Add(new Paragraph(
-                new Run(string.Format("Дата формирования: {0:dd.MM.yyyy HH:mm}", DateTime.Now)))
-            {
-                FontSize = 10,
-                Foreground = Brushes.Gray,
-                Margin = new Thickness(0, 0, 0, 20)
-            });
-
-            var diagStats = dgDiagnosisStats.ItemsSource as List<DiagnosisStatistics>;
-            if (diagStats != null && diagStats.Count > 0)
-            {
-                var table = new Table();
-                table.Columns.Add(new TableColumn { Width = new GridLength(300) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(150) });
-                table.Columns.Add(new TableColumn { Width = new GridLength(150) });
-
-                var rowGroup = new TableRowGroup();
-
-                var headerRow = new TableRow();
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Диагноз")) { FontWeight = FontWeights.Bold }));
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Пациентов")) { FontWeight = FontWeights.Bold }));
-                headerRow.Cells.Add(new TableCell(new Paragraph(new Run("Средн. длительность")) { FontWeight = FontWeights.Bold }));
-                rowGroup.Rows.Add(headerRow);
-
-                foreach (var diag in diagStats)
-                {
-                    var row = new TableRow();
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(diag.Diagnosis))));
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(diag.PatientCount.ToString()))));
-                    row.Cells.Add(new TableCell(new Paragraph(new Run(diag.AverageDurationDisplay))));
-                    rowGroup.Rows.Add(row);
-                }
-
-                table.RowGroups.Add(rowGroup);
-                doc.Blocks.Add(table);
-            }
-
-            return doc;
         }
     }
 }

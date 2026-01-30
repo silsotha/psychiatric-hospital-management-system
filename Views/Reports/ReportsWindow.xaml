@@ -115,7 +115,7 @@
                     </ComboBox>
 
                     <Button x:Name="btnPrint" 
-                           Content="🖨️ Печать / PDF" 
+                           Content="📄 Создать PDF" 
                            Grid.Column="2"
                            Click="BtnPrint_Click"
                            Background="#2196F3"
@@ -230,8 +230,16 @@
                                Content="Применить" 
                                Click="BtnApplyDiagFilter_Click"
                                Padding="10,5"
-                               Margin="10,0,0,0"
+                               Margin="10,0,5,0"
                                Cursor="Hand"/>
+                        <Button x:Name="btnResetDiagFilter" 
+                               Content="🔄 Сбросить" 
+                               Click="BtnResetDiagFilter_Click"
+                               Padding="10,5"
+                               Margin="0"
+                               Cursor="Hand"
+                               Background="#9E9E9E"
+                               Foreground="White"/>
                     </StackPanel>
                 </Border>
 
